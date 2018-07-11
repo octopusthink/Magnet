@@ -1,9 +1,13 @@
 //
 //  KeyCombo.swift
-//  Magnet
 //
-//  Created by 古林俊佑 on 2016/03/09.
-//  Copyright © 2016年 Shunsuke Furubayashi. All rights reserved.
+//  Magnet
+//  GitHub: https://github.com/clipy
+//  HP: https://clipy-app.com
+//
+//  Created by Econa77 on 2016/03/09.
+//
+//  Copyright © 2016-2018 Clipy Project.
 //
 
 import Cocoa
