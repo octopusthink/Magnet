@@ -14,8 +14,8 @@ import Carbon
 public final class KeyTransformer {}
 
 // MARK: - Cocoa & Carbon
-extension KeyTransformer {
-    public static func cocoaFlags(from carbonFlags: Int) -> NSEvent.ModifierFlags {
+public extension KeyTransformer {
+    static func cocoaFlags(from carbonFlags: Int) -> NSEvent.ModifierFlags {
         var cocoaFlags: NSEvent.ModifierFlags = NSEvent.ModifierFlags(rawValue: 0)
 
         if (carbonFlags & cmdKey) != 0 {
@@ -34,7 +34,7 @@ extension KeyTransformer {
         return cocoaFlags
     }
 
-    public static func carbonFlags(from cocoaFlags: NSEvent.ModifierFlags) -> Int {
+    static func carbonFlags(from cocoaFlags: NSEvent.ModifierFlags) -> Int {
         var carbonFlags: Int = 0
 
         if cocoaFlags.contains(.command) {
@@ -53,37 +53,34 @@ extension KeyTransformer {
         return carbonFlags
     }
 
-    public static func supportedCarbonFlags(_ carbonFlags: Int) -> Bool {
+    static func supportedCarbonFlags(_ carbonFlags: Int) -> Bool {
         return cocoaFlags(from: carbonFlags).rawValue != 0
     }
 
-    public static func supportedCocoaFlags(_ cocoaFlogs: NSEvent.ModifierFlags) -> Bool {
+    static func supportedCocoaFlags(_ cocoaFlogs: NSEvent.ModifierFlags) -> Bool {
         return carbonFlags(from: cocoaFlogs) != 0
     }
 
-    public static func singleCarbonFlags(_ carbonFlags: Int) -> Bool {
+    static func singleCarbonFlags(_ carbonFlags: Int) -> Bool {
         let commandSelected = (carbonFlags & cmdKey) != 0
         let optionSelected  = (carbonFlags & optionKey) != 0
         let controlSelected = (carbonFlags & controlKey) != 0
         let shiftSelected   = (carbonFlags & shiftKey) != 0
-        return [commandSelected, optionSelected, controlSelected, shiftSelected]
-            .filter { $0 == true }
-            .count == 1
+        return [commandSelected, optionSelected, controlSelected, shiftSelected].trueCount == 1
     }
 
-    public static func singleCocoaFlags(_ cocoaFlags: NSEvent.ModifierFlags) -> Bool {
+    static func singleCocoaFlags(_ cocoaFlags: NSEvent.ModifierFlags) -> Bool {
         let commandSelected = cocoaFlags.contains(.command)
         let optionSelected  = cocoaFlags.contains(.option)
         let controlSelected = cocoaFlags.contains(.control)
         let shiftSelected   = cocoaFlags.contains(.shift)
-        let hash = commandSelected.intValue + optionSelected.intValue + controlSelected.intValue + shiftSelected.intValue
-        return hash == 1
+        return [commandSelected, optionSelected, controlSelected, shiftSelected].trueCount == 1
     }
 }
 
 // MARK: - Function
-extension KeyTransformer {
-    public static func containsFunctionKey(_ keyCode: Int) -> Bool {
+public extension KeyTransformer {
+    static func containsFunctionKey(_ keyCode: Int) -> Bool {
         switch keyCode {
         case kVK_F1: fallthrough
         case kVK_F2: fallthrough
@@ -113,8 +110,8 @@ extension KeyTransformer {
 }
 
 // MARK: - Modifiers
-extension KeyTransformer {
-    public static func modifiersToString(_ carbonModifiers: Int) -> [String] {
+public extension KeyTransformer {
+    static func modifiersToString(_ carbonModifiers: Int) -> [String] {
         var strings = [String]()
 
         if (carbonModifiers & cmdKey) != 0 {
@@ -133,7 +130,7 @@ extension KeyTransformer {
         return strings
     }
 
-    public static func modifiersToString(_ cocoaModifiers: NSEvent.ModifierFlags) -> [String] {
+    static func modifiersToString(_ cocoaModifiers: NSEvent.ModifierFlags) -> [String] {
         var strings = [String]()
 
         if cocoaModifiers.contains(.command) {

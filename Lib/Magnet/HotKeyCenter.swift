@@ -176,9 +176,9 @@ private extension HotKeyCenter {
         let altTapped = flags.contains(.maskAlternate)
 
         // Only one modifier key
-        let totalHash = commandTapped.intValue + altTapped.intValue + shiftTapped.intValue + controlTapped.intValue
-        if totalHash == 0 { return Unmanaged.passUnretained(event) }
-        if totalHash > 1 {
+        let modifiersCount = [commandTapped, altTapped, shiftTapped, controlTapped].trueCount
+        if modifiersCount == 0 { return Unmanaged.passUnretained(event) }
+        if modifiersCount > 1 {
             multiModifiers = true
             return Unmanaged.passUnretained(event)
         }
