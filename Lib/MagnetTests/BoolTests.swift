@@ -1,9 +1,11 @@
 //
 //  BoolTests.swift
-//  MagnetTests
 //
-//  Created by 古林俊佑 on 2018/09/22.
-//  Copyright © 2018年 Shunsuke Furubayashi. All rights reserved.
+//  MagnetTests
+//  GitHub: https://github.com/clipy
+//  HP: https://clipy-app.com
+//
+//  Copyright © 2015-2019 Clipy Project.
 //
 
 import XCTest
