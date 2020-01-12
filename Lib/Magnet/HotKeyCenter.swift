@@ -13,16 +13,16 @@ public final class HotKeyCenter {
 
     // MARK: - Properties
     public static let shared = HotKeyCenter()
-    fileprivate var hotKeys = [String: HotKey]()
-    fileprivate var hotKeyMap = [NSNumber: HotKey]()
-    fileprivate var hotKeyCount: UInt32 = 0
 
-    fileprivate var tappedModifierKey = NSEvent.ModifierFlags(rawValue: 0)
-    fileprivate var multiModifiers = false
+    private var hotKeys = [String: HotKey]()
+    private var hotKeyMap = [NSNumber: HotKey]()
+    private var hotKeyCount: UInt32 = 0
+    private var tappedModifierKey = NSEvent.ModifierFlags(rawValue: 0)
+    private var multiModifiers = false
+    private var isInstalledFlagsChangedEvent = false
 
     // MARK: - Initialize
     init() {
-        installEventHandler()
         observeApplicationTerminate()
     }
 
@@ -48,6 +48,8 @@ extension HotKeyCenter {
 
             hotKey.hotKeyId = hotKeyId.id
             hotKey.hotKeyRef = carbonHotKey
+        } else {
+            installEventHandler()
         }
 
         let kId = NSNumber(value: hotKeyCount as UInt32)
@@ -106,6 +108,8 @@ extension HotKeyCenter {
 // MARK: - HotKey Events
 private extension HotKeyCenter {
     func installEventHandler() {
+        guard !isInstalledFlagsChangedEvent else { return }
+        isInstalledFlagsChangedEvent = true
         // Press HotKey Event
         var pressedEventType = EventTypeSpec()
         pressedEventType.eventClass = OSType(kEventClassKeyboard)
