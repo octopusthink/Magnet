@@ -113,6 +113,13 @@ private extension HotKeyCenter {
         InstallEventHandler(GetEventDispatcherTarget(), { (_, inEvent, _) -> OSStatus in
             return HotKeyCenter.shared.sendCarbonEvent(inEvent!)
         }, 1, &pressedEventType, nil, nil)
+        
+        var releasedEventType = EventTypeSpec()
+        releasedEventType.eventClass = OSType(kEventClassKeyboard)
+        releasedEventType.eventKind = OSType(kEventHotKeyReleased)
+        InstallEventHandler(GetEventDispatcherTarget(), { (_, inEvent, _) -> OSStatus in
+            return HotKeyCenter.shared.sendCarbonEvent(inEvent!)
+        }, 1, &releasedEventType, nil, nil)
 
         // Press Modifiers Event
         let mask = CGEventMask((1 << CGEventType.flagsChanged.rawValue))
@@ -149,7 +156,9 @@ private extension HotKeyCenter {
 
         switch GetEventKind(event) {
         case EventParamName(kEventHotKeyPressed):
-            hotKeyDown(hotKey)
+            hotKeyDown(hotKey, event: kEventHotKeyPressed)
+        case EventParamName(kEventHotKeyReleased):
+            hotKeyUp(hotKey, event: kEventHotKeyReleased)
         default:
             assert(false, "Unknown event kind")
         }
@@ -157,9 +166,14 @@ private extension HotKeyCenter {
         return noErr
     }
 
-    func hotKeyDown(_ hotKey: HotKey?) {
+    func hotKeyDown(_ hotKey: HotKey?, event: Int) {
         guard let hotKey = hotKey else { return }
-        hotKey.invoke()
+        hotKey.invoke(event)
+    }
+    
+    func hotKeyUp(_ hotKey: HotKey?, event: Int) {
+        guard let hotKey = hotKey else { return }
+        hotKey.invoke(event)
     }
 }
 
@@ -218,6 +232,6 @@ private extension HotKeyCenter {
     func doubleTapped(with key: Int) {
         hotKeys.values
             .filter { $0.keyCombo.doubledModifiers && $0.keyCombo.modifiers == key }
-            .forEach { $0.invoke() }
+            .forEach { $0.invoke(kEventHotKeyPressed) }
     }
 }

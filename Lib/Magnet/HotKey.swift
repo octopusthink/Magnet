@@ -14,7 +14,7 @@ public final class HotKey: NSObject {
     // MARK: - Properties
     public let identifier: String
     public let keyCombo: KeyCombo
-    public let callback: ((HotKey) -> Void)?
+    public let callback: ((HotKey, Int) -> Void)?
     public let target: AnyObject?
     public let action: Selector?
     public let actionQueue: ActionQueue
@@ -50,7 +50,7 @@ public final class HotKey: NSObject {
         super.init()
     }
 
-    public init(identifier: String, keyCombo: KeyCombo, actionQueue: ActionQueue = .main, handler: @escaping ((HotKey) -> Void)) {
+    public init(identifier: String, keyCombo: KeyCombo, actionQueue: ActionQueue = .main, handler: @escaping ((HotKey, Int) -> Void)) {
         self.identifier     = identifier
         self.keyCombo       = keyCombo
         self.callback       = handler
@@ -64,7 +64,7 @@ public final class HotKey: NSObject {
 
 // MARK: - Invoke
 extension HotKey {
-    public func invoke() {
+    public func invoke(_ event: Int) {
         guard let callback = self.callback else {
             guard let target = self.target as? NSObject, let selector = self.action else { return }
             guard target.responds(to: selector) else { return }
@@ -76,7 +76,7 @@ extension HotKey {
         }
         actionQueue.execute { [weak self] in
             guard let wSelf = self else { return }
-            callback(wSelf)
+            callback(wSelf, event)
         }
     }
 }
